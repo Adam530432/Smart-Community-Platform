@@ -86,29 +86,11 @@ The Smart Community Platform is an enterprise-grade community management system 
 
 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/smart_community_platform.git
-cd smart_community_platform
+git clone https://github.com/Adam530432/Smart-Community-Platform.git
+cd Smart-Community-Platform
 ```
 
-2. Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env
-
-# Edit environment variables
-nano .env
-```
-
-3. Docker Deployment
-```bash
-# Build and run with Docker Compose
-docker-compose up --build -d
-
-# Check container status
-docker-compose ps
-```
-
-4. Manual Installation
+2. Manual Installation
 ```bash
 # Create and activate virtual environment
 python -m venv venv
@@ -128,10 +110,10 @@ python scripts/data_generator.py
 flask run
 ```
 
-5. Production Deployment
+3. Production Deployment
 ```bash
 # Install production dependencies
-pip install -r requirements/production.txt
+pip install -r requirements.txt
 
 # Configure Gunicorn
 gunicorn -w 4 -b 127.0.0.1:5000 wsgi:app
