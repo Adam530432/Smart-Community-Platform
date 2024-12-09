@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧社区平台 - 个人中心</title>
+    <!-- CSS 样式 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- JavaScript 依赖 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</head>
+<body class="dashboard-page">
+    <header class="gradient-header">
+        <h1>智慧社区平台 - 个人中心</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">首页</a>
+            <a href="{{ url_for('logout') }}">退出登录</a>
+        </nav>
+    </header>
+
+    <main class="dashboard-container">
+        <!-- 欢迎信息部分 -->
+        <section class="welcome-section">
+            <h2>欢迎, {{ user.name }}</h2>
+            <p>公寓号码: {{ user.apartment_number }}</p>
+        </section>
+    
+        <!-- 账单部分 -->
+        <section class="bills-section">
+            <h3>待缴费用</h3>
+            <div class="bills-content">  <!-- 添加一个内容容器 -->
+                <table class="bills-table">
+                    <thead>
+                        <tr>
+                            <th>账单类型</th>
+                            <th>金额 (元)</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bill in bills %}
+                        <tr>
+                            <td class="bill-type">
+                                {% if bill.bill_type == '水费' %}
+                                    <i class="fas fa-tint"></i>
+                                {% elif bill.bill_type == '电费' %}
+                                    <i class="fas fa-bolt"></i>
+                                {% endif %}
+                                {{ bill.bill_type }}
+                            </td>
+                            <td>{{ "%.2f"|format(bill.amount) }}</td>
+                            <td><button class="pay-btn">支付</button></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+    
+                <!-- 数据可视化导航 -->
+                <div class="viz-nav">
+                    <button class="viz-nav-btn active" data-target="overview">总览</button>
+                    <button class="viz-nav-btn" data-target="bills">费用统计</button>
+                    <button class="viz-nav-btn" data-target="population">人口分布</button>
+                    <button class="viz-nav-btn" data-target="heatmap">热力分布</button>
+                </div>
+    
+                <!-- 统计卡片 -->
+                <div class="stat-cards">
+                    <div class="stat-card">
+                        <i class="fas fa-home"></i>
+                        <div class="stat-info">
+                            <h3>总住户数</h3>
+                            <p>1,234</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-info">
+                            <h3>常住人口</h3>
+                            <p>3,567</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-car"></i>
+                        <div class="stat-info">
+                            <h3>车位使用率</h3>
+                            <p>85%</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-tools"></i>
+                        <div class="stat-info">
+                            <h3>本月报修</h3>
+                            <p>45</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- 图表区域 -->
+                <div class="charts-container">
+                    <div id="overview" class="viz-section active">
+                        <div class="charts-grid">
+                            <div class="chart-container">
+                                <div id="billingsChart" style="width: 100%; height: 400px;"></div>
+                            </div>
+                            <div class="chart-container">
+                                <div id="maintenanceChart" style="width: 100%; height: 400px;"></div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div id="bills" class="viz-section">
+                        <div class="chart-container">
+                            <div id="billingsDetailChart" style="width: 100%; height: 500px;"></div>
+                        </div>
+                    </div>
+    
+                    <div id="population" class="viz-section">
+                        <div class="chart-container">
+                            <div id="ageDistributionChart" style="width: 100%; height: 500px;"></div>
+                        </div>
+                    </div>
+    
+                    <div id="heatmap" class="viz-section">
+                        <div class="chart-container full-width">
+                            <div id="communityMapChart" style="width: 100%; height: 500px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 智慧社区平台 版权所有</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>居民列表</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>居民信息列表</h1>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-info">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="records-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>年龄</th>
+                        <th>公寓号</th>
+                        <th>电话号码</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for resident in residents %}
+                    <tr>
+                        <td>{{ resident['name'] }}</td>
+                        <td>{{ resident['age'] }}</td>
+                        <td>{{ resident['apartment_number'] }}</td>
+                        <td>{{ resident['phone_number'] }}</td>
+                        <td class="actions">
+                            <button class="btn btn-sm btn-info">编辑</button>
+                            <button class="btn btn-sm btn-danger">删除</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>水电费账单 - 智慧社区平台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">智慧社区平台</div>
+            <ul>
+                <li><a href="{{ url_for('index') }}">首页</a></li>
+                <li><a href="{{ url_for('dashboard') }}">个人中心</a></li>
+                <li><a href="{{ url_for('logout') }}">退出登录</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1>水电费账单</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="user-info-card">
+            <h2>{{ user['name'] }} 的账单信息</h2>
+            <p>房间号：{{ user['apartment_number'] }}</p>
+        </div>
+
+        <div class="bills-summary">
+            <div class="summary-card">
+                <div class="summary-item">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <h3>待缴费总额</h3>
+                    <p class="amount unpaid">¥{{ "%.2f"|format(total_unpaid) }}</p>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>已缴费总额</h3>
+                    <p class="amount paid">¥{{ "%.2f"|format(total_paid) }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="monthly-stats">
+            <h2>月度统计</h2>
+            {% for month, stats in monthly_stats.items() %}
+            <div class="month-card">
+                <h3>{{ month }}</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <h4>水费</h4>
+                        <p>已缴：¥{{ "%.2f"|format(stats['water']['paid']) }}</p>
+                        <p>未缴：¥{{ "%.2f"|format(stats['water']['unpaid']) }}</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>电费</h4>
+                        <p>已缴：¥{{ "%.2f"|format(stats['electricity']['paid']) }}</p>
+                        <p>未缴：¥{{ "%.2f"|format(stats['electricity']['unpaid']) }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="bills-table">
+            <h2>账单明细</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>账单类型</th>
+                        <th>金额</th>
+                        <th>状态</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bill in bills %}
+                    <tr>
+                        <td>
+                            <i class="fas fa-{{ 'tint' if bill['bill_type'] == '水费' else 'bolt' }}"></i>
+                            {{ bill['bill_type'] }}
+                        </td>
+                        <td>¥{{ "%.2f"|format(bill['amount']) }}</td>
+                        <td class="status {{ 'paid' if bill['status'] == '已支付' else 'unpaid' }}">
+                            {{ bill['status'] }}
+                        </td>
+                        <td>{{ bill['created_at'].split('.')[0] }}</td>
+                        <td>
+                            {% if bill['status'] == '未支付' %}
+                            <form action="{{ url_for('utility_bills') }}" method="post" style="display: inline;">
+                                <input type="hidden" name="bill_id" value="{{ bill['id'] }}">
+                                <button type="submit" class="btn btn-primary">立即支付</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 智慧社区平台. All rights reserved.</p>
+    </footer>
+</body>
+</html>

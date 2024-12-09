@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户注册 - 智慧社区平台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-box">
+            <h1>用户注册</h1>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('register') }}" class="login-form">
+                <div class="form-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" 
+                           name="name" 
+                           placeholder="姓名" 
+                           required 
+                           value="{{ request.form.name }}"
+                           class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <i class="fas fa-birthday-cake"></i>
+                    <input type="number" 
+                           name="age" 
+                           placeholder="年龄" 
+                           required 
+                           value="{{ request.form.age }}"
+                           class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <i class="fas fa-home"></i>
+                    <input type="text" 
+                           name="apartment_number" 
+                           placeholder="房间号" 
+                           required 
+                           value="{{ request.form.apartment_number }}"
+                           class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <i class="fas fa-phone"></i>
+                    <input type="text" 
+                           name="phone_number" 
+                           placeholder="手机号" 
+                           required 
+                           value="{{ request.form.phone_number }}"
+                           class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" 
+                           name="password" 
+                           placeholder="密码" 
+                           required 
+                           class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block">注册</button>
+                </div>
+                
+                <div class="form-links">
+                    <a href="{{ url_for('login') }}">已有账号？ 立即登录</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

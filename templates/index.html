@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧社区平台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <nav>
+            <div class="logo">智慧社区</div>
+            <ul>
+                <li><a href="{{ url_for('index') }}">首页</a></li>
+                {% if 'user_id' in session %}
+                    <li><a href="{{ url_for('dashboard') }}">个人中心</a></li>
+                    <li><a href="{{ url_for('logout') }}">退出登录</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}">登录</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('residents') }}">居民信息</a></li>
+                <li><a href="{{ url_for('utility_bills') }}">水电费</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- 轮播图部分 -->
+        <section class="hero">
+            <div class="slider">
+                <div class="slide"><img src="{{ url_for('static', filename='images/community_image1.jpg') }}" alt="社区图片1"></div>
+                <div class="slide"><img src="{{ url_for('static', filename='images/community_image2.jpg') }}" alt="社区图片2"></div>
+                <div class="slide"><img src="{{ url_for('static', filename='images/community_image3.jpg') }}" alt="社区图片3"></div>
+            </div>
+            <div class="hero-content">
+                <h1 class="hero-title">智慧生活</h1>
+                <p class="hero-subtitle">从这里开始</p>
+                <a href="#features" class="btn btn-primary">了解更多</a>
+            </div>
+        </section>
+
+        <!-- 平台介绍部分 -->
+        <section class="intro-section" id="features">
+            <div class="intro-container">
+                <div class="intro-wrapper">
+                    <!-- 左侧：平台功能 -->
+                    <div class="platform-intro">
+                        <h2 class="section-title">智慧社区可视化平台</h2>
+                        <p class="intro-text">我们的智慧社区可视化平台是为现代化社区管理而设计的先进系统。它整合了最新的技术，为居民和管理者提供了一个便捷、高效的社区服务平台。</p>
+                        <!-- 修改这部分代码 -->
+                        <div class="features-grid">
+                            <div class="feature-item">
+                                <a href="{{ url_for('dashboard') }}" class="feature-link">
+                                    <i class="fas fa-chart-line"></i>
+                                    <h3>实时社区信息展示</h3>
+                                </a>
+                            </div>
+                            <div class="feature-item">
+                                <a href="{{ url_for('utility_bills') }}" class="feature-link">
+                                    <i class="fas fa-tint"></i>
+                                    <h3>智能水电费管理</h3>
+                                </a>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-tools"></i>
+                                <h3>在线报修和投诉系统</h3>
+                            </div>
+                            <div class="feature-item">
+                                <a href="{{ url_for('notices') }}" class="feature-link">
+                                    <i class="fas fa-bullhorn"></i>
+                                    <h3>社区公告和活动管理</h3>
+                                </a>
+                            </div>
+                            <div class="feature-item">
+                                <a href="{{ url_for('residents') }}" class="feature-link">
+                                    <i class="fas fa-users"></i>
+                                    <h3>居民信息管理</h3>
+                                </a>
+                            </div>
+                            <div class="feature-item">
+                                <a href="{{ url_for('visitor_system') }}" class="feature-link">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <h3>访客管理系统</h3>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- 右侧：社区介绍 -->
+                    <div class="community-intro">
+                        <h2 class="section-title">关于我们的社区</h2>
+                        <p class="intro-text">我们的社区是一个充满活力、注重环保的现代化居住区。这里不仅有舒适的生活环境，还有丰富的文化活动和完善的配套设施。</p>
+                        <div class="features-grid">
+                            <div class="feature-item">
+                                <i class="fas fa-leaf"></i>
+                                <h3>绿色环保的建筑设计</h3>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <h3>24小时智能安保系统</h3>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-building"></i>
+                                <h3>多功能社区活动中心</h3>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-child"></i>
+                                <h3>儿童游乐区</h3>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-bus"></i>
+                                <h3>便捷的公共交通</h3>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <h3>定期文化活动</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 天气预报部分 -->
+        <section class="weather">
+            <h2>社区天气预报</h2>
+            <div class="weather-container">
+                {% for forecast in weather_data %}
+                    <div class="weather-item">
+                        <p class="date">{{ forecast['dt_txt'][:10] }}</p>
+                        <i class="weather-icon fas fa-{{ get_weather_icon(forecast['weather'][0]['icon']) }}"></i>
+                        <p class="temp">{{ forecast['main']['temp'] }}°C</p>
+                        <p class="description">{{ forecast['weather'][0]['description'] }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- 用户信息/登录提示部分 -->
+        {% if 'user_id' in session %}
+            <section class="user-info">
+                <h3>您好，尊敬的居民</h3>
+                <p>您有 <span class="highlight">{{ unpaid_bills_count }}</span> 个未支付的账单。</p>
+                <a href="{{ url_for('utility_bills') }}" class="btn">查看账单</a>
+            </section>
+        {% else %}
+            <section class="login-prompt">
+                <div class="welcome-section">
+                    <h1 class="welcome-title">还未登录？</h1>
+                    <p class="welcome-text">登录以访问更多功能和服务。</p>
+                    <div class="login-options">
+                        <a href="{{ url_for('login') }}" class="login-btn resident-btn">居民登录</a>
+                        <a href="{{ url_for('admin_login') }}" class="login-btn admin-btn">管理员登录</a>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>&copy; 2024 智慧社区平台 版权所有</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧社区平台 - 在线报修系统</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <header class="gradient-header">
+        <nav>
+            <div class="logo">智慧社区</div>
+            <ul>
+                <li><a href="{{ url_for('index') }}">首页</a></li>
+                <li><a href="{{ url_for('dashboard') }}">返回个人中心</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="maintenance-container">
+        <!-- 报修申请表单 -->
+        <section class="maintenance-form-section">
+            <h2>在线报修申请</h2>
+            <form class="maintenance-form" action="{{ url_for('submit_maintenance') }}" method="POST">
+                <div class="form-group">
+                    <label for="type">报修类型</label>
+                    <select id="type" name="type" required>
+                        <option value="plumbing">水管维修</option>
+                        <option value="electrical">电路维修</option>
+                        <option value="appliance">家电维修</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">问题描述</label>
+                    <textarea id="description" name="description" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="location">具体位置</label>
+                    <input type="text" id="location" name="location" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact">联系方式</label>
+                    <input type="text" id="contact" name="contact" required>
+                </div>
+                <button type="submit" class="btn btn-primary">提交报修</button>
+            </form>
+        </section>
+
+        <!-- 报修记录 -->
+        <section class="maintenance-records">
+            <h2>我的报修记录</h2>
+            <div class="records-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>报修类型</th>
+                            <th>问题描述</th>
+                            <th>状态</th>
+                            <th>提交时间</th>
+                            <th>位置</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in maintenance_records %}
+                        <tr>
+                            <td>{{ record.type }}</td>
+                            <td>{{ record.description }}</td>
+                            <td>
+                                <span class="status-badge {{ record.status }}">
+                                    {{ record.status }}
+                                </span>
+                            </td>
+                            <td>{{ record.submit_time }}</td>
+                            <td>{{ record.location }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 智慧社区平台 版权所有</p>
+    </footer>
+</body>
+</html>

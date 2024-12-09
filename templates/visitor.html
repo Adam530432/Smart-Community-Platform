@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧社区平台 - 访客管理系统</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <nav>
+            <div class="logo">智慧社区</div>
+            <ul>
+                <li><a href="{{ url_for('index') }}">首页</a></li>
+                <li><a href="{{ url_for('dashboard') }}">返回个人中心</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="visitor-container">
+        <!-- 访客统计卡片 -->
+        <section class="visitor-stats">
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <div class="stat-info">
+                    <h3>当前访客</h3>
+                    <p>{{ stats.current_visitors }}</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock"></i>
+                <div class="stat-info">
+                    <h3>今日访客</h3>
+                    <p>{{ stats.today_visitors }}</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-check-circle"></i>
+                <div class="stat-info">
+                    <h3>已离开</h3>
+                    <p>{{ stats.registered_visitors }}</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 访客登记表单部分 -->
+        <section class="visitor-registration">
+            <h2 class="section-title"><i class="fas fa-user-plus"></i> 访客登记</h2>
+            <form class="registration-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="text" id="visitor_name" name="visitor_name" class="form-control" placeholder="访客姓名" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="phone" name="phone" class="form-control" placeholder="联系电话" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="text" id="visit_apartment" name="visit_apartment" class="form-control" placeholder="访问房号" required>
+                    </div>
+                    <div class="form-group">
+                        <select id="purpose" name="purpose" class="form-control" required>
+                            <option value="">请选择来访事由</option>
+                            <option value="探亲访友">探亲访友</option>
+                            <option value="快递配送">快递配送</option>
+                            <option value="维修服务">维修服务</option>
+                            <option value="送货上门">送货上门</option>
+                            <option value="家政服务">家政服务</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 如果选择"其他"，则显示详细说明输入框 -->
+                <div class="form-group" id="otherPurposeGroup" style="display: none;">
+                    <textarea id="other_purpose" name="other_purpose" class="form-control" rows="2" placeholder="请详细说明来访事由"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-submit">
+                        <i class="fas fa-check"></i> 提交登记
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- 访客记录列表部分 -->
+        <section class="visitor-records">
+            <h2 class="section-title"><i class="fas fa-list"></i> 访客记录</h2>
+            <div class="records-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>访客姓名</th>
+                            <th>房号</th>
+                            <th>联系方式</th>
+                            <th>来访目的</th>
+                            <th>到访时间</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in visitor_records %}
+                        <tr>
+                            <td>{{ record.visitor_name }}</td>
+                            <td>{{ record.visit_apartment }}</td>
+                            <td>{{ record.phone }}</td>
+                            <td>{{ record.purpose }}</td>
+                            <td>{{ record.visit_time }}</td>
+                            <td>
+                                <span class="status-badge {% if record.status == '在访' %}active{% else %}left{% endif %}">
+                                    {{ record.status }}
+                                </span>
+                            </td>
+                            <td class="actions">
+                                <button class="btn btn-sm btn-info" onclick="generateQRCode('{{ record.id }}')">
+                                    <i class="fas fa-qrcode"></i>
+                                </button>
+                                {% if record.status == '在访' %}
+                                <button class="btn btn-sm btn-success" onclick="markAsLeft('{{ record.id }}')">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- 二维码模态框 -->
+    <div id="qrModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>访客通行二维码</h2>
+            <div id="qrcode"></div>
+        </div>
+    </div>
+
+    <!-- Toast 提示容器 -->
+    <div id="toast" class="toast" style="display: none;"></div>
+
+    <style>
+    .toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #333;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 4px;
+        display: none;
+        animation: fadeIn 0.3s, fadeOut 0.3s 2.7s;
+        z-index: 1000;
+    }
+
+    @keyframes fadeIn {
+        from {opacity: 0;}
+        to {opacity: 1;}
+    }
+
+    @keyframes fadeOut {
+        from {opacity: 1;}
+        to {opacity: 0;}
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 300px;
+        text-align: center;
+        border-radius: 5px;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover {
+        color: black;
+    }
+
+    #qrcode {
+        margin: 20px auto;
+    }
+    </style>
+
+    <script>
+    // Toast 提示函数
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.style.backgroundColor = type === 'success' ? '#4caf50' : '#f44336';
+        toast.style.display = 'block';
+        
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3000);
+    }
+
+    // 表单提交处理
+    document.querySelector('.registration-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        fetch('/register_visitor', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast(data.message);
+                this.reset(); // 重置表单
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } else {
+                showToast(data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('提交过程中发生错误', 'error');
+        });
+    });
+
+    // 其他事由输入框显示/隐藏逻辑
+    document.getElementById('purpose').addEventListener('change', function() {
+        const otherPurposeGroup = document.getElementById('otherPurposeGroup');
+        if (this.value === '其他') {
+            otherPurposeGroup.style.display = 'block';
+        } else {
+            otherPurposeGroup.style.display = 'none';
+        }
+    });
+
+    // 生成二维码
+    function generateQRCode(recordId) {
+        const modal = document.getElementById('qrModal');
+        const qrcodeDiv = document.getElementById('qrcode');
+        qrcodeDiv.innerHTML = ''; // 清除旧的二维码
+        
+        new QRCode(qrcodeDiv, {
+            text: `访客记录ID: ${recordId}`,
+            width: 200,
+            height: 200
+        });
+        
+        modal.style.display = 'block';
+    }
+
+    // 标记访客离开
+    function markAsLeft(recordId) {
+        fetch(`/visitor/mark_left/${recordId}`, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('访客已标记为离开');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } else {
+                showToast('操作失败', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('操作过程中发生错误', 'error');
+        });
+    }
+
+    // 关闭模态框
+    document.querySelector('.close').onclick = function() {
+        document.getElementById('qrModal').style.display = 'none';
+    }
+
+    // 点击模态框外部关闭
+    window.onclick = function(event) {
+        const modal = document.getElementById('qrModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+    </script>
+</body>
+</html>

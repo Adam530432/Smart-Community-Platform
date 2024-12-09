@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧社区平台 - 公告与活动</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <header class="gradient-header">
+        <nav>
+            <div class="logo">智慧社区</div>
+            <ul>
+                <li><a href="{{ url_for('index') }}">首页</a></li>
+                <li><a href="{{ url_for('dashboard') }}">返回个人中心</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="notices-container">
+        <section class="notices-section">
+            <h2>社区公告</h2>
+            <div class="notices-grid">
+                {% for notice in notices %}
+                <div class="notice-card">
+                    <div class="notice-icon">
+                        <i class="fas fa-{{ notice.icon }}"></i>
+                    </div>
+                    <div class="notice-content">
+                        <h3>{{ notice.title }}</h3>
+                        <p class="notice-date">{{ notice.date }}</p>
+                        <p class="notice-text">{{ notice.content }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="activities-section">
+            <h2>近期活动</h2>
+            <div class="activities-grid">
+                {% for activity in activities %}
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <h3>{{ activity.title }}</h3>
+                        <span class="activity-date">{{ activity.date }}</span>
+                    </div>
+                    <div class="activity-details">
+                        <p><i class="fas fa-clock"></i> {{ activity.time }}</p>
+                        <p><i class="fas fa-map-marker-alt"></i> {{ activity.location }}</p>
+                        <p>{{ activity.description }}</p>
+                    </div>
+                    <button class="btn btn-primary">报名参加</button>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 智慧社区平台 版权所有</p>
+    </footer>
+</body>
+</html>
