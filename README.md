@@ -222,7 +222,3 @@ flask db downgrade
 - Error tracking
 - User activity monitoring
 - System health checks
-
-## License
-
-MIT License - see LICENSE file for details
