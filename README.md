@@ -5,6 +5,8 @@ Participate in the open source security award program implemented by the China C
 
 The Smart Community Platform is an enterprise-grade community management system developed using the Python Flask framework. This platform implements a microservices architecture to provide scalable, secure, and efficient services for modern residential communities.
 
+## It's only for the Open Source Security Reward Program  and noncommercial use.
+
 ### Core Features
 
 - **User Management**
@@ -84,6 +86,9 @@ The Smart Community Platform is an enterprise-grade community management system 
 
 ## Installation Guide
 
+* Python 3.9
+* Notice: python version 3.9 is advisable, but not required.
+
 1. Clone the Repository
 ```bash
 git clone https://github.com/Adam530432/Smart-Community-Platform.git
@@ -94,8 +99,6 @@ cd Smart-Community-Platform
 ```bash
 # Create and activate virtual environment
 python -m venv venv
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
 
 # Install dependencies
 pip install -r requirements.txt
