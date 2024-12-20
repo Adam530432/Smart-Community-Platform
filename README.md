@@ -87,7 +87,7 @@ The Smart Community Platform is an enterprise-grade community management system 
 ## Installation Guide
 
 * Python 3.9
-* Notice: python version 3.9 is advisable, but not required.
+* Notice: python version 3.9 is advisable.
 
 1. Clone the Repository
 ```bash
