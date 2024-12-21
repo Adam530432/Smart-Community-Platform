@@ -26,7 +26,7 @@ DATABASE = os.path.join(project_root, 'instance', 'community.db')
 # Modify database connection function
 def get_db():
     if 'db' not in g:
-        # Ensure instance directory exists
+        # Ensure instance directory exist
         os.makedirs(os.path.dirname(DATABASE), exist_ok=True)
         g.db = sqlite3.connect(DATABASE)
         g.db.row_factory = sqlite3.Row
