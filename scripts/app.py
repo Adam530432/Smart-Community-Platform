@@ -313,7 +313,7 @@ def get_dashboard_stats():
         GROUP BY type
     ''').fetchall()
 
-    # Get billing statistics
+    # Retrieve billing statistics
     billing_stats = conn.execute('''
         SELECT bill_type, COUNT(*) as count, SUM(amount) as total
         FROM utility_bills
