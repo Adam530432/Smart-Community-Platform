@@ -68,7 +68,7 @@ def init_db():
         )
         ''')
 
-        # Create admin table
+        # Create admins table
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS admins (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
