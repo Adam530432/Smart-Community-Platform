@@ -23,6 +23,7 @@ app.secret_key = 'your_secret_key'  # For session and flash messages
 DATABASE = os.path.join(project_root, 'instance', 'community.db')
 
 # Database connection function
+
 # Modify database connection function
 def get_db():
     if 'db' not in g:
@@ -67,7 +68,7 @@ def init_db():
         )
         ''')
 
-        # Create admin table
+        # Create admins table
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS admins (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
