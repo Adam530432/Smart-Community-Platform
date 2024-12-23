@@ -290,7 +290,7 @@ def get_dashboard_stats():
         'monthly_fees': 56789  # Example value
     }
 
-    # Get age distribution data
+    # Retrieve age distribution data
     age_distribution = conn.execute('''
         SELECT 
             CASE 
@@ -306,7 +306,7 @@ def get_dashboard_stats():
         ORDER BY age_group
     ''').fetchall()
 
-    # Get maintenance statistics
+    # Retrieve maintenance statistics
     maintenance_stats = conn.execute('''
         SELECT type, COUNT(*) as count
         FROM maintenance_records
