@@ -23,6 +23,7 @@ app.secret_key = 'your_secret_key'  # For session and flash messages
 DATABASE = os.path.join(project_root, 'instance', 'community.db')
 
 # Database connection function
+
 # Modify database connection function
 def get_db():
     if 'db' not in g:
@@ -493,7 +494,7 @@ def add_resident():
 
     conn = get_db()
     try:
-        # Check if phone number already exists
+        # Check if phone numbers already exists
         existing_user = conn.execute(
             'SELECT * FROM residents WHERE phone_number = ?',
             (phone,)
