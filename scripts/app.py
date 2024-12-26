@@ -23,6 +23,7 @@ app.secret_key = 'your_secret_key'  # For session and flash messages
 DATABASE = os.path.join(project_root, 'instance', 'community.db')
 
 # Database connection function
+
 # Modify database connection function
 def get_db():
     if 'db' not in g:
@@ -67,7 +68,7 @@ def init_db():
         )
         ''')
 
-        # Create admin table
+        # Create admins table
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS admins (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -290,7 +291,7 @@ def get_dashboard_stats():
         'monthly_fees': 56789  # Example value
     }
 
-    # Get age distribution data
+    # Retrieve age distribution data
     age_distribution = conn.execute('''
         SELECT 
             CASE 
@@ -306,14 +307,14 @@ def get_dashboard_stats():
         ORDER BY age_group
     ''').fetchall()
 
-    # Get maintenance statistics
+    # Retrieve maintenance statistics
     maintenance_stats = conn.execute('''
         SELECT type, COUNT(*) as count
         FROM maintenance_records
         GROUP BY type
     ''').fetchall()
 
-    # Get billing statistics
+    # Retrieve billing statistics
     billing_stats = conn.execute('''
         SELECT bill_type, COUNT(*) as count, SUM(amount) as total
         FROM utility_bills
@@ -493,7 +494,7 @@ def add_resident():
 
     conn = get_db()
     try:
-        # Check if phone number already exists
+        # Check if phone numbers already exists
         existing_user = conn.execute(
             'SELECT * FROM residents WHERE phone_number = ?',
             (phone,)
